@@ -1,0 +1,187 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<style type="text/css">
+
+#footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    color:#fff;
+}
+
+</style>
+<meta http-equiv="Content-Type" content="text/html; utf-8">
+<title>Its working</title>
+<link href="source/assets/bootstrap.min.css" rel="stylesheet">
+
+<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js'></script>
+<script type='text/javascript' src="source/assets/bootstrap.min.js"></script>
+<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.0/css/bootstrap-combined.min.css" rel="stylesheet">
+<script>
+window.fbAsyncInit = function() {
+    FB.init({
+        appId      : '574156702606446', // App ID from the App Dashboard
+
+	   	status     : true, // check the login status upon init?
+	   	cookie     : true, // set sessions cookies to allow your server to access the session?
+	   	frictionlessrequests: true,
+	   	xfbml      : true  // parse XFBML tags on this page?
+    });
+    
+    	 
+};
+
+  // Load the SDK's source Asynchronously
+  // Note that the debug version is being actively developed and might 
+  // contain some type checks that are overly strict. 
+  // Please report such bugs using the bugs tool.
+  (function(d, debug){
+     var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement('script'); js.id = id; js.async = true;
+     js.src = "//connect.facebook.net/en_US/all" + (debug ? "/debug" : "") + ".js";
+     ref.parentNode.insertBefore(js, ref);
+   }(document, /*debug*/ false));
+  function populateUserId(uid){
+	//  alert("reached userid:  "+uid);
+	  camoOn();
+	 
+	  var resultJSON = '{"100004012315458":"Madhumala Kenchaiah","505634200":"Smitha BK","505491097":"Arjun Prakash","100006012369630":"Testkk Karthik","1081818796":"Karthik kenchaiah"}';
+	  var result = $.parseJSON(resultJSON);
+	  var loop=0;
+	  var key="";
+	  $.each(result, function(k, v) {
+		  if(uid!=k){
+	      $('#FriendsTable').append('<tr><td><div class="thumbnail"><img src=\'https://graph.facebook.com/'+k+'/picture\'></div></td><td>'+v+'</td><td><input type="text" onkeypress="return isNumberKey(event)" onchange="calculateSum()" class="input-xlarge" id="input0'+loop+'"></td></tr>');
+	      loop=loop+1;
+	      key=key+"!"+k;
+		  }
+	  });
+	  $('#FriendsTable').append('<tr><td></td><td>Total</td><td><label id="TotalSum">0.0</label></td></tr>');
+	  document.MainForm.key.value = key;
+	 // alert(key);
+  }
+ function calculateSum(){
+	 var sum=0;
+	 var param="";
+	 for(var i=0; i<4; i+=1){
+		 var inp = $("#input0"+i).val();		
+	     if(inp!= ""){
+		sum=sum+parseFloat(document.getElementById('input0'+i).value);
+		param=param+"!"+document.getElementById('input0'+i).value;
+	     }  
+	     else
+	    	 param=param+"!0";
+	 }
+	 document.getElementById("TotalSum").innerHTML = sum;
+	 document.MainForm.amount.value = param;
+ }
+  function postToFeed() {
+	//  alert("0");
+	camoOff();
+      FB.getLoginStatus(function(response) {
+	    if (response && response.status === 'connected') {	
+  		var uid = response.authResponse.userID;	
+  	//	alert(uid);
+  		var accessToken = response.authResponse.accessToken;
+  	//	alert(accessToken);
+  		populateUserId(uid);
+  		} 
+	    else if (response.status === 'not_authorized') {
+	//    	alert("2");
+	  FB.login(function(response) {
+	  		if (response.authResponse) {
+	  	//		alert("3");
+		//  console.log('Welcome!  Fetching your information.... ');
+		  FB.api('/me', function(response) {
+		//  	console.log('Good to see you, ' + response.name + '.');	
+		  	var uid = response.authResponse.userID;	
+	  	//	console.log(uid);
+	  		var accessToken = response.authResponse.accessToken;
+	  //		alert(accessToken);
+	  		populateUserId(uid);
+	  	//	document.getElementById('accessToken').value = accessToken;
+		});
+		} else {
+			 postToFeed();
+			}
+		
+		});	    }
+  
+   else {
+  FB.login(function(response) {
+	  if (response.authResponse) {
+		  FB.api('/me', function(response) {
+			//  alert("Logging in");
+			  postToFeed();
+		});
+		} else {
+			 postToFeed();
+			}
+		
+		});
+  
+  
+}
+});
+      }
+  
+  function isNumberKey(evt) {
+	    var charCode = (evt.which) ? evt.which : event.keyCode;
+	    if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)  ) {
+	        return false;
+	    } else {
+	        return true;
+	    }    
+	   
+	}
+  function camoOn(){
+	    $("div").show();
+	}
+
+	function camoOff(){
+	        $("div").hide(); 
+	}
+
+  </script>
+</head>
+<body onload="postToFeed()">
+<form name="MainForm"  method="POST" action="http://localhost:8080/rest-api-sample/PayFriendCommunicator"> 
+<input type="hidden" name="key">
+<input type="hidden" name="amount">
+<input id="numVal" type="hidden" value="0">
+<div id="holder">
+<div id="camoflagger">
+<div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </a>
+      <a class="brand" href="#">PayFriend</a>
+      <div class="nav-collapse">
+      </div><!-- /.nav-collapse -->
+    </div>
+  </div><!-- /navbar-inner -->
+</div> 
+<div class="hero-unit">
+  <h1>Splitting bills has never been easier</h1>
+</div> 
+  <table id="FriendsTable"> 
+  </table>
+ <div class="container">
+ <input type="submit" name="Get Payment" class="btn btn-primary" data-toggle="button" onclick="/PayFriendCommunicator"/>
+ </div>
+<div id="footer">
+      <div class="container">
+        <p><small>Application by:</small><strong>  Karthik  Kenchaiah </strong></p>
+      </div>
+    </div>
+ </div>
+ </div>
+ </form>
+</body>
+</html>

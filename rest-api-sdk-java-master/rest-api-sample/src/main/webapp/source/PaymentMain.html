@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+<head>
+<title>Payment with credit card</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<script language="JavaScript">
+
+function check() {
+var accepted=null;
+
+if (form.First_Name.value.length == 0) {
+alert("Please enter the first name on card.");
+form.First_Name.focus();
+return false;
+}
+else if (form.Last_Name.value.length == 0) {
+alert("Please enter the last name on card.");
+form.Last_Name.focus();
+return false;
+}
+else if (form.Card_Num.value.length == 0){
+alert("Please enter the Card Number.");
+form.Card_Num.focus();
+return false;
+}
+else if (form.Card_Code.value.length < 3) {
+alert("Please enter a CVV2 number.");
+form.Card_Code.focus();
+return false;
+}
+else if (form.Exp_Month.value.length < 2) {
+alert("Please enter a expiration month.");
+form.Exp_Month.focus();
+return false;
+}
+else if (form.Exp_Year.value.length < 4) {
+alert("Please enter a expiration year.");
+form.Exp_Year.focus();
+return false;
+}
+return true;
+}
+//-->
+</script>
+</head>
+
+<body>
+
+<form name="form" action="paymentwithcreditcard" method="post" onsubmit="return check();">
+<table>
+<tr>
+<td>Amount:</td>
+<td><input type="text" name="Amount" value=""></td>
+</tr><tr>
+<td>Cardholder's First Name:</td>
+<td><input type="text" name="First_Name"></td>
+</tr><tr>
+<td>Cardholder's Last Name:</td>
+<td><input type="text" name="Last_Name"></td>
+</tr><tr>
+<td>Credit Card Number:</td>
+<td><input type="text" name="Card_Num"></td>
+</tr><tr>
+<td>Exp. date (mm /yyyy):</td>
+<td><input type="text" name="Exp_Month" maxlength="2">
+<input type="text" name="Exp_Year" maxlength="4"></td>
+</tr><tr>
+</tr>
+<tr>
+<td >Card type</td>
+<td><select name="card_type">
+<option value="visa">Visa</option>
+<option value="master">Master</option>
+<option value="amex">American Express</option>
+</select>
+</td>
+</tr>
+<tr>
+<td colspan="2" align="center">
+<small>The Card Verification Code (Card ID or CVV2)
+is required for American Express,Visa and MasterCard.
+Please enter: for American Express - 4 digits on front of card;
+for Visa and Mastercard - last 3 digits on back of card:</small>
+</td>
+</tr><tr>
+<td>Card CVV:</td>
+<td><input type="text" name="Card_Code" maxlength="4"></td>
+</tr><tr>
+<td colspan="2" align="center"><small>
+Please enter the address at which the credit card bills are received:
+</small></td>
+</tr><tr>
+<td>Street Address:</td>
+<td><input type="text" name="Address"></td>
+</tr><tr>
+<td>City:</td>
+<td><input type="text" name="City"></td>
+</tr><tr>
+<td>State/Province:</td>
+<td><input type="text" name="State"></td>
+</tr><tr>
+<td>Zip/Postal Code:</td>
+<td><input type="text" name="Zip"></td>
+</tr><tr>
+<td>Country:</td>
+<td><input type="text" name="Country"></td>
+</tr><tr>
+<td colspan="2" align="center">
+<input type="submit" value="Submit payment" >
+</td>
+</tr>
+</table>
+</form>
+
+</body>
+</html>
